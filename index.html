@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RevMarket — El mercado de repuestos</title>
+<meta name="description" content="RevMarket: compra y venta de repuestos, accesorios y partes de autos. Nuevos, usados y reacondicionados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Saira+Condensed:wght@500;600;700;800&family=Saira:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0D;
+    --surface:#141418;
+    --surface-2:#1C1C22;
+    --line:#2A2A32;
+    --line-bright:#3A3A44;
+    --text:#F4F3EF;
+    --muted:#9A9AA2;
+    --orange:#FF5C1A;
+    --orange-2:#FF8A3D;
+    --orange-dim:rgba(255,92,26,.12);
+    --nuevo:#3FD17A;
+    --reac:#FFB23E;
+    --usado:#9AA0AC;
+    --display:"Saira Condensed",system-ui,sans-serif;
+    --data:"Saira",system-ui,sans-serif;
+    --body:"Inter",system-ui,sans-serif;
+    --maxw:1180px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(900px 360px at 78% -8%, rgba(255,92,26,.10), transparent 70%),
+      radial-gradient(700px 300px at -5% 8%, rgba(255,138,61,.05), transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(11,11,13,.82);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:70px;gap:18px}
+  .brand{display:flex;align-items:baseline;gap:14px;min-width:0}
+  .wordmark{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:26px;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    white-space:nowrap;
+    display:flex;align-items:center;
+  }
+  .wordmark .rev{color:var(--text)}
+  .wordmark .market{color:var(--orange)}
+  .wordmark .bolt{
+    display:inline-block;width:9px;height:9px;margin:0 2px 0 5px;
+    background:var(--orange);
+    clip-path:polygon(0 0,100% 0,60% 50%,100% 100%,0 100%,40% 50%);
+    transform:translateY(1px);
+  }
+  .tagline{
+    font-family:var(--data);
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  nav.site-nav{display:flex;gap:6px}
+  nav.site-nav a{
+    font-family:var(--data);
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--muted);
+    padding:8px 12px;
+    border-radius:6px;
+    transition:color .15s,background .15s;
+  }
+  nav.site-nav a:hover{color:var(--text);background:var(--surface-2)}
+
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
+  .eyebrow{
+    font-family:var(--data);font-weight:700;font-size:13px;
+    letter-spacing:3px;text-transform:uppercase;color:var(--orange);
+    display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  }
+  .eyebrow::before{content:"";width:34px;height:2px;background:var(--orange)}
+  .hero h1{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(44px,7vw,78px);
+    line-height:.94;
+    letter-spacing:-.5px;
+    text-transform:uppercase;
+  }
+  .hero h1 em{color:var(--orange);font-style:normal}
+  .hero p.lead{color:var(--muted);font-size:17px;max-width:46ch;margin-top:20px}
+  .search-box{
+    margin-top:30px;
+    display:flex;align-items:center;gap:12px;
+    background:var(--surface);
+    border:1px solid var(--line-bright);
+    border-radius:12px;
+    padding:6px 6px 6px 18px;
+    max-width:520px;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .search-box:focus-within{border-color:var(--orange);box-shadow:0 0 0 4px var(--orange-dim)}
+  .search-box svg{flex:0 0 auto;color:var(--muted)}
+  .search-box input{
+    flex:1;min-width:0;
+    background:transparent;border:0;outline:0;
+    color:var(--text);
+    font-family:var(--body);font-size:16px;
+    padding:12px 0;
+  }
+  .search-box input::placeholder{color:var(--muted)}
+  .search-box input::-webkit-search-cancel-button{display:none}
+  .search-box .clear{
+    border:0;background:var(--surface-2);color:var(--muted);
+    width:34px;height:34px;border-radius:8px;cursor:pointer;
+    font-size:18px;line-height:1;display:none;
+  }
+  .search-box .clear:hover{color:var(--text)}
+  .search-box.has-value .clear{display:block}
+
+  .tach{display:flex;justify-content:center;align-items:center}
+  .tach svg{width:100%;max-width:340px;height:auto;filter:drop-shadow(0 12px 30px rgba(0,0,0,.5))}
+
+  .catalog{padding:46px 0 24px}
+  .controls{display:flex;flex-direction:column;gap:18px;margin-bottom:30px}
+  .filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .filter-label{
+    font-family:var(--data);font-weight:700;font-size:12px;
+    letter-spacing:2px;text-transform:uppercase;color:var(--muted);
+    width:96px;flex:0 0 auto;
+  }
+  .chip{
+    font-family:var(--data);font-weight:600;font-size:13px;
+    letter-spacing:.6px;
+    background:var(--surface);
+    color:var(--muted);
+    border:1px solid var(--line);
+    padding:8px 15px;border-radius:999px;cursor:pointer;
+    transition:color .15s,background .15s,border-color .15s;
+  }
+  .chip:hover{color:var(--text);border-color:var(--line-bright)}
+  .chip[aria-pressed="true"]{background:var(--orange);color:#1a0e06;border-color:var(--orange);font-weight:700}
+
+  .result-bar{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+    padding-bottom:14px;margin-bottom:26px;
+  }
+  .section-title{font-family:var(--display);font-weight:700;font-size:30px;text-transform:uppercase;letter-spacing:.5px}
+  .count{font-family:var(--data);font-weight:600;font-size:14px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+  .count b{color:var(--orange)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    display:flex;flex-direction:column;
+    position:relative;
+    transition:border-color .18s,transform .18s,box-shadow .18s;
+  }
+  .card::before{
+    content:"";position:absolute;top:0;right:0;
+    width:0;height:0;
+    border-top:16px solid var(--surface-2);
+    border-left:16px solid transparent;
+    border-top-right-radius:14px;
+  }
+  .card:hover{border-color:var(--line-bright);transform:translateY(-3px);box-shadow:0 16px 36px rgba(0,0,0,.45)}
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .cat{font-family:var(--data);font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--orange)}
+  .state{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:var(--data);font-weight:700;font-size:11px;
+    letter-spacing:1px;text-transform:uppercase;
+    color:var(--muted);
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    padding:4px 9px;border-radius:999px;
+  }
+  .state .dot{width:7px;height:7px;border-radius:50%;background:var(--usado)}
+  .state[data-state="Nuevo"]{color:var(--nuevo)}
+  .state[data-state="Nuevo"] .dot{background:var(--nuevo)}
+  .state[data-state="Reacondicionado"]{color:var(--reac)}
+  .state[data-state="Reacondicionado"] .dot{background:var(--reac)}
+  .state[data-state="Usado"]{color:var(--usado)}
+  .state[data-state="Usado"] .dot{background:var(--usado)}
+
+  .card h3{
+    font-family:var(--display);font-weight:700;
+    font-size:21px;line-height:1.08;
+    text-transform:uppercase;letter-spacing:.2px;
+    margin-bottom:16px;
+  }
+  .specs{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px 0;margin-bottom:18px}
+  .spec{display:flex;align-items:baseline;gap:12px;padding:8px 0}
+  .spec + .spec{border-top:1px dashed var(--line)}
+  .spec .k{
+    font-family:var(--data);font-weight:700;font-size:11px;
+    letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+    width:78px;flex:0 0 auto;
+  }
+  .spec .v{font-size:14px;color:var(--text);font-weight:500}
+  .card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto}
+  .price{font-family:var(--data);font-weight:700;font-size:26px;letter-spacing:.4px;color:var(--text)}
+  .price .cur{color:var(--orange);font-size:16px;vertical-align:top;margin-right:1px}
+  .add{
+    font-family:var(--data);font-weight:700;font-size:12px;
+    letter-spacing:1.5px;text-transform:uppercase;
+    background:transparent;color:var(--orange);
+    border:1px solid var(--orange);
+    padding:9px 14px;border-radius:9px;cursor:pointer;
+    transition:color .15s,background .15s;white-space:nowrap;
+  }
+  .add:hover{background:var(--orange);color:#1a0e06}
+
+  .empty{display:none;text-align:center;padding:70px 20px;border:1px dashed var(--line-bright);border-radius:14px}
+  .empty.show{display:block}
+  .empty .icon{font-size:34px;margin-bottom:12px}
+  .empty h4{font-family:var(--display);font-weight:700;font-size:24px;text-transform:uppercase;margin-bottom:8px}
+  .empty p{color:var(--muted);max-width:38ch;margin:0 auto 18px}
+  .empty button{
+    font-family:var(--data);font-weight:700;font-size:13px;letter-spacing:1px;
+    text-transform:uppercase;background:var(--orange);color:#1a0e06;
+    border:0;padding:11px 20px;border-radius:9px;cursor:pointer;
+  }
+
+  .about{padding:64px 0;border-top:1px solid var(--line);margin-top:36px}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .about .eyebrow{margin-bottom:14px}
+  .about h2{font-family:var(--display);font-weight:800;font-size:clamp(32px,4vw,46px);line-height:1;text-transform:uppercase;margin-bottom:18px}
+  .about p{color:var(--muted);font-size:16px;margin-bottom:14px;max-width:52ch}
+  .about p strong{color:var(--text);font-weight:600}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .stat{background:var(--surface);padding:26px 22px}
+  .stat .n{font-family:var(--display);font-weight:800;font-size:42px;color:var(--orange);line-height:1}
+  .stat .l{font-family:var(--data);font-weight:600;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:8px}
+
+  footer.site{border-top:1px solid var(--line);padding:40px 0;margin-top:10px}
+  .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+  .footer-inner .wordmark{font-size:22px}
+  .footer-inner small{font-family:var(--data);font-weight:500;color:var(--muted);letter-spacing:1px;font-size:13px}
+
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr}
+    .tach{order:-1;margin-bottom:6px}
+    .tach svg{max-width:260px}
+    .about-grid{grid-template-columns:1fr;gap:30px}
+  }
+  @media (max-width:620px){
+    .tagline{display:none}
+    nav.site-nav a{padding:8px 9px}
+    .hero{padding:44px 0 30px}
+    .filter-label{width:100%}
+    .header-inner{height:62px}
+    .wrap{padding:0 18px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;scroll-behavior:auto!important}
+  }
+  :focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:4px}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <a href="#top" class="wordmark" aria-label="RevMarket inicio">
+        <span class="rev">Rev</span><span class="bolt" aria-hidden="true"></span><span class="market">Market</span>
+      </a>
+      <span class="tagline">El mercado de repuestos</span>
+    </div>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#sobre">Sobre</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Compra &amp; venta de partes</div>
+        <h1>Repuestos<br>que <em>rinden</em></h1>
+        <p class="lead">Encontrá la pieza justa para tu auto. Motor, suspensión, frenos, carrocería y electrónica — nuevos, usados y reacondicionados, al toque.</p>
+        <div class="search-box" id="searchBox">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line>
+          </svg>
+          <input id="search" type="search" placeholder="Buscar repuesto o vehículo compatible…" aria-label="Buscar repuesto o vehículo compatible" autocomplete="off">
+          <button class="clear" id="clearSearch" aria-label="Borrar búsqueda" type="button">×</button>
+        </div>
+      </div>
+      <div class="tach" aria-hidden="true">
+        <svg id="tach" viewBox="0 0 320 200" role="img" aria-label="Tacómetro decorativo"></svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog" id="catalogo">
+    <div class="wrap">
+      <div class="controls">
+        <div class="filter-row" id="catFilters" role="group" aria-label="Filtrar por categoría">
+          <span class="filter-label">Categoría</span>
+        </div>
+        <div class="filter-row" id="stateFilters" role="group" aria-label="Filtrar por estado">
+          <span class="filter-label">Estado</span>
+        </div>
+      </div>
+
+      <div class="result-bar">
+        <h2 class="section-title">Catálogo</h2>
+        <span class="count" id="count"></span>
+      </div>
+
+      <div class="grid" id="grid"></div>
+
+      <div class="empty" id="empty">
+        <div class="icon">🔧</div>
+        <h4>Sin resultados</h4>
+        <p>No encontramos repuestos con esos criterios. Probá con otro término o limpiá los filtros.</p>
+        <button type="button" id="resetAll">Limpiar filtros</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="sobre">
+    <div class="wrap about-grid">
+      <div>
+        <div class="eyebrow">Sobre RevMarket</div>
+        <h2>El mercado<br>de los fierreros</h2>
+        <p><strong>RevMarket</strong> es el lugar donde compradores y vendedores de repuestos se encuentran. Publicá la pieza que te sobra o conseguí la que te falta, con datos claros: categoría, marca, vehículo compatible y estado real.</p>
+        <p>Cada publicación muestra la información que importa antes de cerrar la operación, para que sepas exactamente qué estás comprando. Sin vueltas, directo entre quienes saben de autos.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n">5</div><div class="l">Categorías</div></div>
+        <div class="stat"><div class="n">+10</div><div class="l">Marcas de autos</div></div>
+        <div class="stat"><div class="n">3</div><div class="l">Estados de pieza</div></div>
+        <div class="stat"><div class="n">24/7</div><div class="l">Publicá cuando quieras</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap footer-inner">
+    <span class="wordmark"><span class="rev">Rev</span><span class="bolt" aria-hidden="true"></span><span class="market">Market</span></span>
+    <small>© 2026 RevMarket — El mercado de repuestos.</small>
+  </div>
+</footer>
+
+<script>
+const PRODUCTS = [
+  { desc:"Kit de distribución completo", cat:"Motor", marca:"SKF", veh:"VW Gol Trend 1.6", anios:"2012–2018", estado:"Nuevo", precio:142000 },
+  { desc:"Amortiguadores delanteros (par)", cat:"Suspensión", marca:"Sachs", veh:"Ford Ka 1.5", anios:"2016–2021", estado:"Nuevo", precio:189500 },
+  { desc:"Pastillas de freno cerámicas", cat:"Frenos", marca:"Bosch", veh:"Toyota Corolla 1.8", anios:"2014–2019", estado:"Nuevo", precio:58900 },
+  { desc:"Turbo compresor", cat:"Motor", marca:"Garrett", veh:"VW Amarok 2.0 TDI", anios:"2011–2016", estado:"Reacondicionado", precio:415000 },
+  { desc:"Faro delantero derecho", cat:"Carrocería", marca:"Original", veh:"Chevrolet Onix 1.4", anios:"2017–2020", estado:"Usado", precio:74000 },
+  { desc:"Alternador 90A", cat:"Electrónica", marca:"Valeo", veh:"Ford Focus 2.0", anios:"2009–2013", estado:"Reacondicionado", precio:96500 },
+  { desc:"Discos de freno ventilados (par)", cat:"Frenos", marca:"Fremax", veh:"VW Vento 2.5", anios:"2011–2015", estado:"Nuevo", precio:112000 },
+  { desc:"ECU computadora de motor", cat:"Electrónica", marca:"Bosch", veh:"Toyota Hilux 3.0 TDI", anios:"2012–2018", estado:"Usado", precio:325000 },
+  { desc:"Paragolpes delantero", cat:"Carrocería", marca:"Original", veh:"Chevrolet Cruze 1.8", anios:"2016–2020", estado:"Usado", precio:135000 },
+  { desc:"Rótulas de suspensión (par)", cat:"Suspensión", marca:"Perfect", veh:"Ford Ranger 3.2", anios:"2013–2019", estado:"Nuevo", precio:43500 },
+];
+
+const CATEGORIES = ["Todos","Motor","Suspensión","Frenos","Carrocería","Electrónica"];
+const STATES = ["Todos","Nuevo","Usado","Reacondicionado"];
+
+let activeCat = "Todos";
+let activeState = "Todos";
+let query = "";
+
+const fmt = n => new Intl.NumberFormat("es-AR").format(n);
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+
+const grid = document.getElementById("grid");
+const empty = document.getElementById("empty");
+const countEl = document.getElementById("count");
+const searchInput = document.getElementById("search");
+const searchBox = document.getElementById("searchBox");
+const clearBtn = document.getElementById("clearSearch");
+
+function buildChips(containerId, values, current, onPick){
+  const container = document.getElementById(containerId);
+  values.forEach(value => {
+    const btn = document.createElement("button");
+    btn.className = "chip";
+    btn.type = "button";
+    btn.textContent = value;
+    btn.setAttribute("aria-pressed", value === current ? "true" : "false");
+    btn.addEventListener("click", () => {
+      container.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed","false"));
+      btn.setAttribute("aria-pressed","true");
+      onPick(value);
+    });
+    container.appendChild(btn);
+  });
+}
+
+function matches(p){
+  if(activeCat !== "Todos" && p.cat !== activeCat) return false;
+  if(activeState !== "Todos" && p.estado !== activeState) return false;
+  if(query){
+    const q = norm(query);
+    const haystack = norm(`${p.desc} ${p.veh} ${p.anios} ${p.marca}`);
+    if(!haystack.includes(q)) return false;
+  }
+  return true;
+}
+
+function render(){
+  const list = PRODUCTS.filter(matches);
+  grid.innerHTML = "";
+  countEl.innerHTML = `<b>${list.length}</b> ${list.length === 1 ? "publicación" : "publicaciones"}`;
+
+  if(list.length === 0){
+    empty.classList.add("show");
+    grid.style.display = "none";
+    return;
+  }
+  empty.classList.remove("show");
+  grid.style.display = "grid";
+
+  const frag = document.createDocumentFragment();
+  list.forEach(p => {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-top">
+        <span class="cat">${p.cat}</span>
+        <span class="state" data-state="${p.estado}"><span class="dot"></span>${p.estado}</span>
+      </div>
+      <h3>${p.desc}</h3>
+      <div class="specs">
+        <div class="spec"><span class="k">Marca</span><span class="v">${p.marca}</span></div>
+        <div class="spec"><span class="k">Vehículo</span><span class="v">${p.veh} · ${p.anios}</span></div>
+      </div>
+      <div class="card-bottom">
+        <span class="price"><span class="cur">$</span>${fmt(p.precio)}</span>
+        <button class="add" type="button" aria-label="Ver ${p.desc}">Ver más</button>
+      </div>`;
+    frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+}
+
+searchInput.addEventListener("input", e => {
+  query = e.target.value.trim();
+  searchBox.classList.toggle("has-value", query.length > 0);
+  render();
+});
+
+clearBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  query = "";
+  searchBox.classList.remove("has-value");
+  searchInput.focus();
+  render();
+});
+
+document.getElementById("resetAll").addEventListener("click", () => {
+  activeCat = "Todos";
+  activeState = "Todos";
+  query = "";
+  searchInput.value = "";
+  searchBox.classList.remove("has-value");
+  document.querySelectorAll("#catFilters .chip").forEach(c => c.setAttribute("aria-pressed", c.textContent === "Todos" ? "true" : "false"));
+  document.querySelectorAll("#stateFilters .chip").forEach(c => c.setAttribute("aria-pressed", c.textContent === "Todos" ? "true" : "false"));
+  render();
+});
+
+function buildTach(){
+  const svg = document.getElementById("tach");
+  const cx = 160, cy = 168, R = 132;
+  const toXY = (val, r) => {
+    const ang = (180 - (val / 9) * 180) * Math.PI / 180;
+    return [cx + r * Math.cos(ang), cy - r * Math.sin(ang)];
+  };
+  const arcPath = (v1, v2, r) => {
+    const [x1,y1] = toXY(v1, r), [x2,y2] = toXY(v2, r);
+    return `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;
+  };
+
+  let out = "";
+  out += `<path d="${arcPath(0,9,R)}" fill="none" stroke="#2A2A32" stroke-width="10" stroke-linecap="round"/>`;
+  out += `<path d="${arcPath(7,9,R)}" fill="none" stroke="#FF5C1A" stroke-width="10" stroke-linecap="round"/>`;
+
+  for(let v = 0; v <= 9; v++){
+    const [ox,oy] = toXY(v, R - 9);
+    const [ix,iy] = toXY(v, R - 22);
+    const col = v >= 7 ? "#FF8A3D" : "#9A9AA2";
+    out += `<line x1="${ox}" y1="${oy}" x2="${ix}" y2="${iy}" stroke="${col}" stroke-width="2.5"/>`;
+    const [tx,ty] = toXY(v, R - 40);
+    out += `<text x="${tx}" y="${ty + 5}" fill="${v >= 7 ? '#FF8A3D' : '#F4F3EF'}" font-family="Saira,sans-serif" font-weight="700" font-size="16" text-anchor="middle">${v}</text>`;
+  }
+  for(let v = 0.5; v < 9; v++){
+    const [ox,oy] = toXY(v, R - 9);
+    const [ix,iy] = toXY(v, R - 17);
+    out += `<line x1="${ox}" y1="${oy}" x2="${ix}" y2="${iy}" stroke="#3A3A44" stroke-width="1.5"/>`;
+  }
+
+  const [nx,ny] = toXY(6.4, R - 30);
+  out += `<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#FF5C1A" stroke-width="4" stroke-linecap="round"/>`;
+  out += `<circle cx="${cx}" cy="${cy}" r="11" fill="#1C1C22" stroke="#FF5C1A" stroke-width="3"/>`;
+  out += `<circle cx="${cx}" cy="${cy}" r="3" fill="#FF5C1A"/>`;
+  out += `<text x="${cx}" y="${cy + 34}" fill="#9A9AA2" font-family="Saira,sans-serif" font-weight="700" font-size="11" letter-spacing="2" text-anchor="middle">RPM × 1000</text>`;
+  svg.innerHTML = out;
+}
+
+buildChips("catFilters", CATEGORIES, activeCat, v => { activeCat = v; render(); });
+buildChips("stateFilters", STATES, activeState, v => { activeState = v; render(); });
+buildTach();
+render();
+</script>
+</body>
+</html>
